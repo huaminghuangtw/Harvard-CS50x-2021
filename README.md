@@ -110,7 +110,7 @@ Go to [ide.cs50.io](https://ide.cs50.io/) and click "Log in" to access/setup you
 
 ### Final Project
 
-Please refer to another GitHub repository [Web-Sudoku-Puzzle-Game](https://github.com/hmhuang0501/Web-Sudoku-Puzzle-Game).
+Please refer to another GitHub repository [Web-Sudoku-Puzzle-Game](https://github.com/huaminghuangtw/Web-Sudoku-Puzzle-Game).
 
 ---
 
