@@ -98,7 +98,7 @@ Go to [ide.cs50.io](https://ide.cs50.io/) and click "Log in" to access/setup you
 - Lab 8
 	+ [trivia](./lab8/trivia)
 - Problem Set 8
-	+ [homepage](https://github.com/hmhuang0501/My-Personal-Website) (⭐View my personal website [here](https://hmhuang0501.github.io/My-Personal-Website/) !!!)
+	+ [homepage](https://github.com/huaminghuangtw/huaminghuangtw.github.io) (⭐View my personal website [here](https://huaminghuangtw.github.io/) !!!)
 
 ⚪ Week 9 - Flask  
 - Lab 9
