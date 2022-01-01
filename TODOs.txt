@@ -1,5 +1,3 @@
-pset8/homepage
-    - Add link in README
 pset9/finance
     - Add toast/snack bar when buying ("Bought!") and selling ("Sold!") stocks
         * https://getbootstrap.com/docs/5.0/components/toasts/
