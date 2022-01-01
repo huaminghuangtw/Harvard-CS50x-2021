@@ -114,5 +114,11 @@ Please refer to another GitHub repository [Web-Sudoku-Puzzle-Game](https://githu
 
 ---
 
+### References
+- [CS50 Manual Pages](https://manual.cs50.io/)
+- [CS50 on GitHub](https://github.com/cs50)
+
+---
+
 ### Contact
 If you have any question or suggestion, feel free to contact me at huaming.huang.tw@gmail.com. Contributions are also welcomed. Please open a [pull-request](https://github.com/hmhuang0501/Harvard-CS50x-2021/compare) or an [issue](https://github.com/hmhuang0501/Harvard-CS50x-2021/issues/new) in this repository. 
