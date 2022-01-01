@@ -1,0 +1,11 @@
+sort1 uses: bubble sort
+
+How do you know?: best case is on the order of n, worst case is on the order of n^2
+
+sort2 uses: merge sort
+
+How do you know?: best case and worst case are on the order of n x log(n)
+
+sort3 uses: selection sort
+
+How do you know?: best case and worst case are on the order of n^2

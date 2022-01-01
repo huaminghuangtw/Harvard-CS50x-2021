@@ -1,0 +1,7 @@
+apple
+book
+bat
+banana
+cat
+caterpillar
+car

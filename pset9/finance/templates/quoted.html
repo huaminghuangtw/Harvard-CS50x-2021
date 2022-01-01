@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quoted
+{% endblock %}
+
+{% block main %}
+    <p>A share of {{ stock.name }} costs {{ usd_function(stock.price) }}.</p>
+{% endblock %}
