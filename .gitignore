@@ -1,1 +1,12 @@
+# Ignore everything
+*
+
+# Unignore all files with extensions
+!*.*
+
+# Unignore all directories
+!*/
+
+### Above combination will ignore all files without extension (e.g., Linux Executable Files) ###
+
 TODOs.txt
