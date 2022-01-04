@@ -94,13 +94,13 @@ Go to [ide.cs50.io](https://ide.cs50.io/) and click "Log in" to access/setup you
 	+ [fiftyville](./pset7/fiftyville)
 	+ [movies](./pset7/movies)
 
-⚫ Week 8 - HTML, CSS, JavaScript  
+⚫️ Week 8 - HTML, CSS, JavaScript  
 - Lab 8
 	+ [trivia](./lab8/trivia)
 - Problem Set 8
 	+ [homepage](https://github.com/huaminghuangtw/huaminghuangtw.github.io) (⭐View my personal website [here](https://huaminghuangtw.github.io/) !!!)
 
-⚪ Week 9 - Flask  
+⚪️ Week 9 - Flask  
 - Lab 9
 	+ [birthdays](./lab9/birthdays)
 - Problem Set 9
