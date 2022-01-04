@@ -38,7 +38,7 @@ Go to [ide.cs50.io](https://ide.cs50.io/) and click "Log in" to access/setup you
 
 ---
 
-### Table Of Contents
+### Table of Contents
 
 > N.B. For all of the Problem Sets, only "**more comfortable**" ones are implemented.  
 
