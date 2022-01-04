@@ -99,7 +99,7 @@ I took this online course during October-December, 2021.
 
 ---
 
-### Getting started with CS50 IDE
+### Getting Started with CS50 IDE
 Go to [ide.cs50.io](https://ide.cs50.io/) and click "Log in" to access/setup your CS50 IDE!
 
 📝 [CS50 IDE](https://ide.cs50.io/) is a web-based "integrated development environment" that allows you to program "in the cloud," without installing any software locally. Indeed, [CS50 IDE](https://ide.cs50.io/) provides you with your very own "workspace" (i.e., storage space) in which you can save your own files and folders (a.k.a. directories).
