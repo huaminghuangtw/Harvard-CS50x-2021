@@ -15,30 +15,12 @@ I took this online course during October-December, 2021.
 > DISCLAIMER: Please do not simply copy the code without trying to solve the problems yourself in the first place. The author reserves all rights but does not be liable in any event (e.g., plagiarism) caused by the use of the program. Remember that one can only learn programming by doing it. Have fun coding!😃 (Please see [Academic Honesty](https://cs50.harvard.edu/x/2021/honesty/) for more details and guidelines!)
 
 ---
-
-### Certificate of Completion
-
-- [CS50 Certificate](https://certificates.cs50.io/4ea0f1af-9e1e-4544-a99a-974f84fa02c1.png?size=A4)
-- [Verified Certificate from edX]()
-
----
-
-### Getting started with CS50 IDE
-Go to [ide.cs50.io](https://ide.cs50.io/) and click "Log in" to access/setup your CS50 IDE!
-
-📝 [CS50 IDE](https://ide.cs50.io/) is a web-based "integrated development environment" that allows you to program "in the cloud," without installing any software locally. Indeed, [CS50 IDE](https://ide.cs50.io/) provides you with your very own "workspace" (i.e., storage space) in which you can save your own files and folders (a.k.a. directories).
-
-✍️ Useful CS50 IDE keybindings/shortcuts
-- `Alt + S` (switch between "text editor" and "terminal window")
-- `Ctrl + S` (save file)
-- `Alt + N` (new file)
-- `Ctrl + /` (comment/uncomment)
-
-➡️ For more options, please refer to [here](https://www.pythonclassroom.com/python-cloud-options/cloud9/cloud9-cheat-sheet) and [here](https://www.reddit.com/r/cs50/comments/9he3rx/what_are_your_favourite_most_useful_cs50_ide/).
-
----
-
 ### Table of Contents
+
+<details>
+<summary>Expand for more</summary>
+
+<br>
 
 > N.B. For all of the Problem Sets, only "**more comfortable**" ones are implemented.  
 
@@ -105,6 +87,30 @@ Go to [ide.cs50.io](https://ide.cs50.io/) and click "Log in" to access/setup you
 	+ [birthdays](./lab9/birthdays)
 - Problem Set 9
 	+ [finance](./pset9/finance)
+
+</details>
+
+---
+
+### Certificate of Completion
+
+- [CS50 Certificate](https://certificates.cs50.io/4ea0f1af-9e1e-4544-a99a-974f84fa02c1.png?size=A4)
+- [Verified Certificate from edX]()
+
+---
+
+### Getting started with CS50 IDE
+Go to [ide.cs50.io](https://ide.cs50.io/) and click "Log in" to access/setup your CS50 IDE!
+
+📝 [CS50 IDE](https://ide.cs50.io/) is a web-based "integrated development environment" that allows you to program "in the cloud," without installing any software locally. Indeed, [CS50 IDE](https://ide.cs50.io/) provides you with your very own "workspace" (i.e., storage space) in which you can save your own files and folders (a.k.a. directories).
+
+✍️ Useful CS50 IDE keybindings/shortcuts
+- `Alt + S` (switch between "text editor" and "terminal window")
+- `Ctrl + S` (save file)
+- `Alt + N` (new file)
+- `Ctrl + /` (comment/uncomment)
+
+➡️ For more options, please refer to [here](https://www.pythonclassroom.com/python-cloud-options/cloud9/cloud9-cheat-sheet) and [here](https://www.reddit.com/r/cs50/comments/9he3rx/what_are_your_favourite_most_useful_cs50_ide/).
 
 ---
 
