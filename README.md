@@ -12,7 +12,8 @@ I took this online course during October-December, 2021.
 </tr>
 </table>
 
-> DISCLAIMER: Please do not simply copy the code without trying to solve the problems yourself in the first place. The author reserves all rights but does not be liable in any event (e.g., plagiarism) caused by the use of the program. Remember that one can only learn programming by doing it. Have fun coding!😃 (Please see [Academic Honesty](https://cs50.harvard.edu/x/2021/honesty/) for more details and guidelines!)
+> DISCLAIMER: Please do not simply copy the code without trying to solve the problems yourself in the first place. The author reserves all rights but does not be liable in any event (e.g., plagiarism) caused by the use of the program. Remember that one can only learn programming by doing it. Have fun coding!😃  
+(Please see [Academic Honesty](https://cs50.harvard.edu/x/2021/honesty/) for more details and guidelines!)
 
 ---
 ### Table of Contents
