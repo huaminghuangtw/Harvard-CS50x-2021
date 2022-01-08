@@ -5,12 +5,25 @@
 {% endblock %}
 
 {% block main %}
+    {% if messages %}
+    <div id="toast_alignment" class="d-flex justify-content-center align-items-center" aria-live="polite" aria-atomic="true" style="height: 220px;">
+        <div class="toast border-0" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false" animation="true">
+            <div class="toast-header">
+                <h5><strong class="mr-auto"><i class="bi bi-cash-coin"></i> {{ messages["type"] }}</strong></h5>
+            </div>
+            <div class="toast-body">
+                <p>{{ messages["shares"] }} share(s) of {{ messages["symbol"] }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Symbol</th>
                 <th>Name</th>
-                <th>Shares</th>
+                <th>Share(s)</th>
                 <th>Price</th>
                 <th>TOTAL</th>
             </tr>

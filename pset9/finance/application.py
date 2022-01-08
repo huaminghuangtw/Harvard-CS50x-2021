@@ -1,7 +1,7 @@
 import os
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -46,10 +46,16 @@ if not os.environ.get("API_KEY"):
 def index():
     """Show portfolio of stocks"""
     user_id = session["user_id"]
+    messages = session.get("messages", None)
 
-    stocks = db.execute("SELECT symbol, name, SUM(shares) as totalShares, price FROM transactions WHERE user_id = ? GROUP BY symbol",
-                        user_id)
-    # db.execute will return a list of dictionaries, inside of which are keys and values representing a table’s fields and cells, respectively
+    # Delete stocks with zero shares
+    db.execute("DELETE FROM transactions \
+                WHERE symbol IN (SELECT symbol FROM transactions \
+                WHERE user_id = ? GROUP BY symbol HAVING TOTAL(shares) == 0)", \
+                user_id)
+
+    stocks = db.execute("SELECT symbol, name, SUM(shares) as totalShares, price FROM transactions WHERE user_id = ? GROUP BY symbol", user_id)
+    # db.execute will return a list of dictionaries, inside of which are keys and values representing a table's fields and cells, respectively
     cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
     cash = cash[0]["cash"]
 
@@ -57,7 +63,10 @@ def index():
     for stock in stocks:
         total += stock["price"] * stock["totalShares"]
 
-    return render_template("index.html", stocks=stocks, cash=usd(cash), total=usd(total), usd_function=usd)
+    # Reset flashing message on homepage
+    session["messages"] = None
+
+    return render_template("index.html", stocks=stocks, cash=usd(cash), total=usd(total), usd_function=usd, messages=messages)
 
 # ---------------------------------------------
 @app.route("/register", methods=["GET", "POST"])
@@ -69,22 +78,28 @@ def register():
         confirmation = request.form.get("confirmation")
 
         if not username:
-            return apology("Please provide username")
+            flash("Please provide username!", "danger")
+            return redirect("/register")
         elif not password:
-            return apology("Please provide password")
+            flash("Please provide password!", "danger")
+            return redirect("/register")
         elif not confirmation:
-            return apology("Please provide password confirmation")
+            flash("Please provide password confirmation!", "danger")
+            return redirect("/register")
 
         if (password != confirmation):
-            return apology("Passwords do not match!")
+            flash("Passwords do not match!", "danger")
+            return redirect("/register")
 
         hash = generate_password_hash(password)
 
         try:
             db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash)
+            flash("Registration successful!", "success")
             return redirect("/")
         except:
-            return apology("Username has already been registered!")
+            flash("Username has already been registered!", "danger")
+            return redirect("/register")
     else:
         return render_template("register.html")
 
@@ -93,31 +108,42 @@ def register():
 def login():
     """Log user in"""
 
-    # Forget any user_id
-    session.clear()
+    # Forget any user_id, but maintain flashed message if present
+    if session.get("_flashes"):
+        flashes = session.get("_flashes")
+        session.clear()
+        session["_flashes"] = flashes
+    else:
+        session.clear()
 
     # User reached route via POST (as by submitting a form via POST)
     if (request.method == "POST"):
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return apology("Must provide username", 403)
+            flash("Must provide username!", "danger")
+            return redirect("/login")
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return apology("Must provide password", 403)
+            flash("Must provide password!", "danger")
+            return redirect("/login")
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
 
         # Ensure username exists and password is correct
         if (len(rows) != 1) or (not check_password_hash(rows[0]["hash"], request.form.get("password"))):
-            return apology("Invalid username and/or password", 403)
+            flash("Invalid username and/or password!", "danger")
+            return redirect("/login")
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
 
-        # Redirect user to home page
+        # Flash "Login successfully!" message
+        flash("Login successfully!", "success")
+
+        # Redirect user to homepage
         return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
@@ -132,8 +158,11 @@ def logout():
     # Forget any user_id
     session.clear()
 
+    # Flash "You have been successfully logged out!" message
+    flash("You have been successfully logged out!", "success")
+
     # Redirect user to login form
-    return redirect("/")
+    return redirect("/login")
 
 # ---------------------------------------------
 @app.route("/changepwd", methods=["GET", "POST"])
@@ -147,23 +176,31 @@ def changepwd():
         confirmation = request.form.get("confirmation")
 
         if not current_password:
-            return apology("Please provide your current password")
+            flash("Please provide your current password!", "danger")
+            return redirect("/changepwd")
         elif not new_password:
-            return apology("Please provide your new password")
+            flash("Please provide your new password!", "danger")
+            return redirect("/changepwd")
         elif not confirmation:
-            return apology("Please provide new password confirmation")
+            flash("Please provide new password confirmation!", "danger")
+            return redirect("/changepwd")
 
         rows = db.execute("SELECT * FROM users WHERE id = ?", user_id)
 
         if (not check_password_hash(rows[0]["hash"], current_password)):
-            return apology("Your current password is incorrect!")
+            flash("Your current password is incorrect!", "danger")
+            return redirect("/changepwd")
         elif (new_password != confirmation):
-            return apology("New passwords do not match!")
+            flash("New passwords do not match!", "danger")
+            return redirect("/changepwd")
         elif (new_password == current_password):
-            return apology("Your new password cannot be the same as your current password!")
+            flash("Your new password cannot be the same as your current password!", "danger")
+            return redirect("/changepwd")
 
         hash = generate_password_hash(new_password)
         db.execute("UPDATE users SET hash = ? WHERE id = ?", hash, user_id)
+
+        flash("Successfully changed password!", "success")
 
         return redirect("/")
     else:
@@ -174,6 +211,8 @@ def changepwd():
 @login_required
 def buy():
     """Buy shares of stock"""
+    user_id = session["user_id"]
+
     if (request.method == "POST"):
         symbol = request.form.get("symbol").upper()
         stock = lookup(symbol)
@@ -184,27 +223,28 @@ def buy():
             return apology("Invalid symbol!")
 
         try:
-            shares = int(request.form.get("shares"))
+            shares_to_buy = int(request.form.get("shares"))
         except:
             return apology("Shares must be an integer!")
 
-        if (shares <= 0):
+        if (shares_to_buy <= 0):
             return apology("Shares must be a positive integer!")
 
-        user_id = session["user_id"]
-        # db.execute will return a list of dictionaries, inside of which are keys and values representing a table’s fields and cells, respectively
+        # db.execute will return a list of dictionaries, inside of which are keys and values representing a table's fields and cells, respectively
         cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
         cash = cash[0]["cash"]
         stock_name = stock["name"]
         stock_price = stock["price"]
-        total_price = stock_price * shares
+        total_price = stock_price * shares_to_buy
 
         if (cash < total_price):
             return apology("Not enough cash!")
         else:
             db.execute("UPDATE users SET cash = ? WHERE id = ?", cash - total_price, user_id)
-            db.execute("INSERT INTO transactions (user_id, name, shares, price, type, symbol) VALUES (?, ?, ?, ?, ?, ?)",
-                       user_id, stock_name, shares, stock_price, "buy", symbol)
+            db.execute("INSERT INTO transactions (user_id, name, shares, price, type, symbol) VALUES (?, ?, ?, ?, ?, ?)", \
+                       user_id, stock_name, shares_to_buy, stock_price, "buy", symbol)
+
+        session["messages"] = {"type": "Bought!", "symbol": symbol, "shares": shares_to_buy}
 
         return redirect("/")
     else:
@@ -219,24 +259,26 @@ def sell():
 
     if (request.method == "POST"):
         symbol = request.form.get("symbol")
-        shares = int(request.form.get("shares"))
+        shares_to_sell = int(request.form.get("shares"))
 
-        if (shares <= 0):
+        if (shares_to_sell <= 0):
             return apology("Shares must be a positive integer!")
 
         stock_name = lookup(symbol)["name"]
         stock_price = lookup(symbol)["price"]
-        shares_owned = db.execute("SELECT shares FROM transactions WHERE USER_ID = ? and SYMBOL = ? GROUP BY symbol",
-                                  user_id, symbol)[0]["shares"]
+        shares_owned = db.execute("SELECT SUM(shares) as totalShares FROM transactions WHERE USER_ID = ? and SYMBOL = ? GROUP BY symbol", \
+                                  user_id, symbol)[0]["totalShares"]
 
-        if (shares_owned < shares):
+        if (shares_owned < shares_to_sell):
             return apology("You don't have enough shares!")
 
         current_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
-        income = shares * stock_price
+        income = shares_to_sell * stock_price
         db.execute("UPDATE users SET cash = ? WHERE id = ?", current_cash + income, user_id)
-        db.execute("INSERT INTO transactions (user_id, name, shares, price, type, symbol) VALUES (?, ?, ?, ?, ?, ?)",
-                   user_id, stock_name, -shares, stock_price, "sell", symbol)
+        db.execute("INSERT INTO transactions (user_id, name, shares, price, type, symbol) VALUES (?, ?, ?, ?, ?, ?)", \
+                   user_id, stock_name, -shares_to_sell, stock_price, "sell", symbol)
+
+        session["messages"] = {"type": "Sold!", "symbol": symbol, "shares": shares_to_sell}
 
         return redirect("/")
     else:
