@@ -16,6 +16,7 @@ I took this online course during October-December, 2021.
 (Please see [Academic Honesty](https://cs50.harvard.edu/x/2021/honesty/) for more details and guidelines!)
 
 ---
+
 ### Table of Contents
 
 <details>
@@ -96,7 +97,7 @@ I took this online course during October-December, 2021.
 ### Certificate of Completion
 
 - [CS50 Certificate](https://certificates.cs50.io/4ea0f1af-9e1e-4544-a99a-974f84fa02c1.png?size=A4)
-- [Verified Certificate from edX]()
+- [Verified Certificate from edX](https://courses.edx.org/certificates/83c9c3ff8c654190b867c224aeaabefa)
 
 ---
 
@@ -128,4 +129,4 @@ Please refer to another GitHub repository [Web-Sudoku-Puzzle-Game](https://githu
 ---
 
 ### Contact
-If you have any question or suggestion, feel free to contact me at huaming.huang.tw@gmail.com. Contributions are also welcomed. Please open a [pull-request](https://github.com/hmhuang0501/Harvard-CS50x-2021/compare) or an [issue](https://github.com/hmhuang0501/Harvard-CS50x-2021/issues/new) in this repository. 
+If you have any question or suggestion, feel free to contact me at huaming.huang.tw@gmail.com. Contributions are also welcomed. Please open a [pull-request](https://github.com/hmhuang0501/Harvard-CS50x-2021/compare) or an [issue](https://github.com/hmhuang0501/Harvard-CS50x-2021/issues/new) in this repository.
