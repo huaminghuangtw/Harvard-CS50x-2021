@@ -7,7 +7,7 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookup, usd
+from helpers import *
 
 
 # Configure application
@@ -41,32 +41,54 @@ if not os.environ.get("API_KEY"):
     raise RuntimeError("API_KEY not set")
 
 # ---------------------------------------------
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
     """Show portfolio of stocks"""
     user_id = session["user_id"]
-    messages = session.get("messages", None)
 
-    # Delete stocks with zero shares
-    db.execute("DELETE FROM transactions \
-                WHERE symbol IN (SELECT symbol FROM transactions \
-                WHERE user_id = ? GROUP BY symbol HAVING TOTAL(shares) == 0)", \
-                user_id)
+    if (request.method == "GET"):
+        messages = session.get("messages", None)
 
-    stocks = db.execute("SELECT symbol, name, SUM(shares) as totalShares, price FROM transactions WHERE user_id = ? GROUP BY symbol", user_id)
-    # db.execute will return a list of dictionaries, inside of which are keys and values representing a table's fields and cells, respectively
-    cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
-    cash = cash[0]["cash"]
+        # Delete stocks with zero shares
+        db.execute("DELETE FROM transactions \
+                    WHERE symbol IN (SELECT symbol FROM transactions \
+                    WHERE user_id = ? GROUP BY symbol HAVING TOTAL(shares) == 0)", \
+                    user_id)
 
-    total = cash
-    for stock in stocks:
-        total += stock["price"] * stock["totalShares"]
+        stocks = db.execute("SELECT symbol, name, SUM(shares) as totalShares, price FROM transactions WHERE user_id = ? GROUP BY symbol", user_id)
+        # db.execute will return a list of dictionaries, inside of which are keys and values representing a table's fields and cells, respectively
+        cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
+        cash = cash[0]["cash"]
 
-    # Reset flashing message on homepage
-    session["messages"] = None
+        total = cash
+        for stock in stocks:
+            total += stock["price"] * stock["totalShares"]
 
-    return render_template("index.html", stocks=stocks, cash=usd(cash), total=usd(total), usd_function=usd, messages=messages)
+        # Reset flashing message on homepage
+        session["messages"] = None
+
+        return render_template("index.html", stocks=stocks, cash=usd(cash), total=usd(total), usd_function=usd, messages=messages)
+    else:
+        if ("add_cash" in request.form):
+            current_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
+            add_cash = request.form.get("add_cash")
+            cash_added = int(add_cash)
+            db.execute("UPDATE users SET cash = ? WHERE id = ?", current_cash + cash_added, user_id)
+        else:
+            stocks = db.execute("SELECT symbol, name, SUM(shares) as totalShares, price FROM transactions WHERE user_id = ? GROUP BY symbol", user_id)
+            for stock in stocks:
+                transaction_type = request.form.get(stock["symbol"])
+                if not transaction_type:
+                    continue
+                else:
+                    if (transaction_type == "Sell"):
+                        sell_kernel(db, request.form, user_id, from_homepage=True)
+                    elif (transaction_type == "Buy"):
+                        buy_kernel(db, request.form, user_id, from_homepage=True)
+                    break
+
+        return redirect("/")
 
 # ---------------------------------------------
 @app.route("/register", methods=["GET", "POST"])
@@ -139,6 +161,7 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
+        session["username"] = request.form.get("username")
 
         # Flash "Login successfully!" message
         flash("Login successfully!", "success")
@@ -204,7 +227,8 @@ def changepwd():
 
         return redirect("/")
     else:
-        return render_template("changepwd.html")
+        username = session["username"]
+        return render_template("changepwd.html", username=username)
 
 # ---------------------------------------------
 @app.route("/buy", methods=["GET", "POST"])
@@ -212,40 +236,8 @@ def changepwd():
 def buy():
     """Buy shares of stock"""
     user_id = session["user_id"]
-
     if (request.method == "POST"):
-        symbol = request.form.get("symbol").upper()
-        stock = lookup(symbol)
-
-        if not symbol:
-            return apology("Please enter a symbol")
-        elif not stock:
-            return apology("Invalid symbol!")
-
-        try:
-            shares_to_buy = int(request.form.get("shares"))
-        except:
-            return apology("Shares must be an integer!")
-
-        if (shares_to_buy <= 0):
-            return apology("Shares must be a positive integer!")
-
-        # db.execute will return a list of dictionaries, inside of which are keys and values representing a table's fields and cells, respectively
-        cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
-        cash = cash[0]["cash"]
-        stock_name = stock["name"]
-        stock_price = stock["price"]
-        total_price = stock_price * shares_to_buy
-
-        if (cash < total_price):
-            return apology("Not enough cash!")
-        else:
-            db.execute("UPDATE users SET cash = ? WHERE id = ?", cash - total_price, user_id)
-            db.execute("INSERT INTO transactions (user_id, name, shares, price, type, symbol) VALUES (?, ?, ?, ?, ?, ?)", \
-                       user_id, stock_name, shares_to_buy, stock_price, "buy", symbol)
-
-        session["messages"] = {"type": "Bought!", "symbol": symbol, "shares": shares_to_buy}
-
+        buy_kernel(db, request.form, user_id)
         return redirect("/")
     else:
         return render_template("buy.html")
@@ -256,30 +248,8 @@ def buy():
 def sell():
     """Sell shares of stock"""
     user_id = session["user_id"]
-
     if (request.method == "POST"):
-        symbol = request.form.get("symbol")
-        shares_to_sell = int(request.form.get("shares"))
-
-        if (shares_to_sell <= 0):
-            return apology("Shares must be a positive integer!")
-
-        stock_name = lookup(symbol)["name"]
-        stock_price = lookup(symbol)["price"]
-        shares_owned = db.execute("SELECT SUM(shares) as totalShares FROM transactions WHERE USER_ID = ? and SYMBOL = ? GROUP BY symbol", \
-                                  user_id, symbol)[0]["totalShares"]
-
-        if (shares_owned < shares_to_sell):
-            return apology("You don't have enough shares!")
-
-        current_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
-        income = shares_to_sell * stock_price
-        db.execute("UPDATE users SET cash = ? WHERE id = ?", current_cash + income, user_id)
-        db.execute("INSERT INTO transactions (user_id, name, shares, price, type, symbol) VALUES (?, ?, ?, ?, ?, ?)", \
-                   user_id, stock_name, -shares_to_sell, stock_price, "sell", symbol)
-
-        session["messages"] = {"type": "Sold!", "symbol": symbol, "shares": shares_to_sell}
-
+        sell_kernel(db, request.form, user_id)
         return redirect("/")
     else:
         symbols = db.execute("SELECT symbol FROM transactions WHERE user_id = ? GROUP BY symbol", user_id)

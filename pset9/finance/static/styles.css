@@ -46,7 +46,24 @@ main img
     max-width: 100%;
 }
 
-main .alert
+main .form-inline
 {
-    text-align: left;
+    display: inline-block;
+}
+
+table th, table td
+{
+    vertical-align: middle !important;
+    /* Fit the table cell width to the contents */
+    width: 1%;
+    white-space: nowrap;
+}
+
+.center-screen
+{
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
 }
