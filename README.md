@@ -19,7 +19,7 @@ I took this online course during October-December, 2021.
 ### Table of Contents
 
 <details>
-<summary>Expand for more</summary>
+<summary>+++ Expand for more +++</summary>
 
 <br>
 
