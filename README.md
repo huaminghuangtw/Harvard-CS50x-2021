@@ -15,7 +15,6 @@ I took this online course during October-December, 2021.
 > DISCLAIMER: Please do not simply copy the code without trying to solve the problems yourself in the first place. The author reserves all rights but does not be liable in any event (e.g., plagiarism) caused by the use of the program. Remember that one can only learn programming by doing it. Have fun coding!😃  
 (Please see [Academic Honesty](https://cs50.harvard.edu/x/2021/honesty/) for more details and guidelines!)
 
----
 
 ### Table of Contents
 
@@ -88,7 +87,7 @@ I took this online course during October-December, 2021.
 - Lab 9
 	+ [birthdays](./lab9/birthdays)
 - Problem Set 9
-	+ [finance](./pset9/finance)
+	+ [finance](https://github.com/huaminghuangtw/CS50-Finance)
 
 </details>
 
@@ -129,4 +128,4 @@ Please refer to another GitHub repository [Web-Sudoku-Puzzle-Game](https://githu
 ---
 
 ### Contact
-If you have any question or suggestion, feel free to contact me at huaming.huang.tw@gmail.com. Contributions are also welcomed. Please open a [pull-request](https://github.com/hmhuang0501/Harvard-CS50x-2021/compare) or an [issue](https://github.com/hmhuang0501/Harvard-CS50x-2021/issues/new) in this repository.
+If you have any question or suggestion, feel free to contact me at huaming.huang.tw@gmail.com. Contributions are also welcomed. Please open a [pull-request](https://github.com/huaminghuangtw/Harvard-CS50x-2021/compare) or an [issue](https://github.com/huaminghuangtw/Harvard-CS50x-2021/issues/new) in this repository.

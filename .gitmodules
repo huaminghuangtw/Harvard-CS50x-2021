@@ -1,3 +1,6 @@
 [submodule "pset8/homepage"]
 	path = pset8/homepage
 	url = git@github.com:huaminghuangtw/huaminghuangtw.github.io.git
+[submodule "pset9/finance"]
+	path = pset9/finance
+	url = https://github.com/huaminghuangtw/CS50-Finance.git
